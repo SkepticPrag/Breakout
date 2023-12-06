@@ -1,50 +1,66 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Brick : MonoBehaviour
+public class Brick : MonoBehaviour, IBrick
 {
-    public SpriteRenderer _spriteRenderer;
-    SpriteRenderer spriteRenderer => _spriteRenderer = _spriteRenderer ? _spriteRenderer : GetComponent<SpriteRenderer>();
+    public int Health { get; set; }
+    public int HitPoints { get; set; }
+    public int DestroyedPoints { get; set; }
+    public bool Unbreakable { get; set; }
 
-    public Sprite[] states;
+    SpriteRenderer _spriteRenderer;
+    SpriteRenderer spriteRenderer => _spriteRenderer = _spriteRenderer ? _spriteRenderer : GetComponentInParent<SpriteRenderer>();
 
-    public int hitPoints;
-    public int deathPoints;
-    public int health;
-    public bool unbreakable;
+    BoxCollider2D boxCollider2D;
 
-    private void Start()
+    public List<Sprite> States { get; set; }
+
+    public void GetBrickReady(int healthState)
     {
-        if (!unbreakable)
-        {
-            spriteRenderer.sprite = states[health - 1];
-        }
+        gameObject.AddComponent<BoxCollider2D>();
+        boxCollider2D = GetComponent<BoxCollider2D>();
+        spriteRenderer.sprite = null;
+        spriteRenderer.sprite = States[healthState - 1];
+        SetBoxColliderOnSprite(spriteRenderer.sprite);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.GetComponent<Ball>())
         {
-            Hit();
+            if (!IsUnbreakable())
+                Hit();
         }
     }
 
-    private void Hit()
+    public void Hit()
     {
-        if (unbreakable)
-            return;
+        --Health;
 
-        --health;
-
-        if (health <= 0)
+        if (Health <= 0)
         {
-            GameManager.Instance.AddScore(deathPoints);
-            gameObject.SetActive(false);
-
+            GameManager.Instance.AddScore(DestroyedPoints);
+            transform.parent.gameObject.SetActive(false);
         }
         else
         {
-            GameManager.Instance.AddScore(hitPoints);
-            spriteRenderer.sprite = states[health - 1];
+            GameManager.Instance.AddScore(HitPoints);
+            spriteRenderer.sprite = States[Health - 1];
         }
+    }
+
+    private bool IsUnbreakable()
+    {
+        if (Unbreakable)
+            return true;
+
+        return false;
+    }
+
+    public void SetBoxColliderOnSprite(Sprite state)
+    {
+        spriteRenderer.sprite = state;
+        Vector2 spriteSize = spriteRenderer.sprite.bounds.size;
+        boxCollider2D.size = spriteSize;
     }
 }

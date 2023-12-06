@@ -24,8 +24,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
-
-        SceneManager.sceneLoaded += OnLevelLoaded;
     }
 
     private void OnLevelLoaded(Scene sceneLoaded, LoadSceneMode mode)
@@ -37,6 +35,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        SceneManager.sceneLoaded += OnLevelLoaded;
         NewGame();
     }
 
@@ -91,7 +90,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < bricks.Length; i++)
         {
-            if (bricks[i].gameObject.activeInHierarchy && !bricks[i].unbreakable)
+            if (bricks[i].gameObject.activeInHierarchy && !bricks[i].Unbreakable)
                 return false;
         }
 

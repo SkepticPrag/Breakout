@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec13271ded9527441b299e5eaf657745, type: 3}
   m_Name: GreenBrick
   m_EditorClassIdentifier: 
-  brickName: 
-  brickPrefab: {fileID: 0}
-  health: 0
-  hitPoints: 0
-  destructionPoints: 0
+  brickName: Green Brick
+  states: {fileID: 11400000, guid: 559a089744a7c044fac5bb79aa8ac272, type: 2}
+  brickPrefab: {fileID: 7360111693992002048, guid: f7a57d2939df9874eb06742de8cfb905, type: 3}
+  health: 2
+  hitPoints: 25
+  destroyedPoints: 75
   unbreakable: 0

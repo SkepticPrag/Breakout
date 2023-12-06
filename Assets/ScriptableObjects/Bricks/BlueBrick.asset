@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec13271ded9527441b299e5eaf657745, type: 3}
-  m_Name: UnbreakableBrick
+  m_Name: BlueBrick
   m_EditorClassIdentifier: 
-  brickName: 
-  brickPrefab: {fileID: 0}
-  health: 0
-  hitPoints: 0
-  destructionPoints: 0
+  brickName: Blue Brick
+  states: {fileID: 11400000, guid: 559a089744a7c044fac5bb79aa8ac272, type: 2}
+  brickPrefab: {fileID: 7770643454810716821, guid: a42814fc911f6424b8db80e22e48f414, type: 3}
+  health: 1
+  hitPoints: 25
+  destroyedPoints: 50
   unbreakable: 0
