@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -5,30 +6,46 @@ using UnityEngine;
 public class Paddle : MonoBehaviour
 {
     Rigidbody2D _rigidBody2D;
-    Rigidbody2D rigidBody2D => _rigidBody2D = _rigidBody2D ? _rigidBody2D : GetComponent<Rigidbody2D>();
+    public Rigidbody2D rigidBody2D => _rigidBody2D = _rigidBody2D ? _rigidBody2D : GetComponent<Rigidbody2D>();
 
-    float speed = 30f;
-    Vector2 direction;
+    float speed = 10f;
+    float maxBounceAngle = 75f;
+
+    Vector3 direction;
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        direction.x = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
+
+        direction = new Vector2(direction.x, 0f);
+
+        transform.position += direction;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Ball ball = collision.gameObject.GetComponent<Ball>();
+
+        if (ball != null)
         {
-            direction = Vector2.left;
-        }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            direction = Vector2.right;
-        }
-        else
-        {
-            direction = Vector2.zero;
+            Vector3 paddlePosition = transform.position;
+            Vector2 contactPoint = collision.GetContact(0).point;
+
+            float offset = paddlePosition.x - contactPoint.x;
+            float width = collision.otherCollider.bounds.size.x / 2;
+
+            float currentAngle = Vector2.SignedAngle(Vector2.up, ball.rigidBody2D.velocity);
+            float bounceAngle = (offset / width) * maxBounceAngle;
+            float newAngle = Mathf.Clamp(currentAngle + bounceAngle, -maxBounceAngle, maxBounceAngle);
+
+            Quaternion rotation = Quaternion.AngleAxis(newAngle, Vector3.forward);
+            ball.rigidBody2D.velocity = rotation * Vector2.up * ball.speed;
         }
     }
 
-    private void FixedUpdate()
+    internal void ResetPaddle()
     {
-        if (direction != Vector2.zero)
-            rigidBody2D.AddForce(direction * speed);
+        transform.position = new Vector2(0f, transform.position.y);
+        rigidBody2D.velocity = Vector2.zero;
     }
 }
